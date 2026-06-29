@@ -1,0 +1,29 @@
+name: Deploy Zip to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Unzip WWW Folder
+        run: unzip www.zip -d .
+
+      - name: Fix Base Href for Ionic
+        run: sed -i 's|<base href="/" />|<base href="/uas-ecommerce/" />|g' index.html
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
